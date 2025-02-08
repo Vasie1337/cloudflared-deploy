@@ -1,96 +1,82 @@
 # Traefik Reverse Proxy with Node.js Example
 
-This project demonstrates a setup using Traefik as a reverse proxy with automatic SSL certificate management, alongside a sample Node.js application.
+A production-ready setup for hosting multiple web applications using Traefik as a reverse proxy with automatic SSL certificate management.
+
+## Quick Start
+
+1. **Clone and Setup**
+```bash
+# Clone repository
+git clone <repository-url>
+cd traefik-deploy
+
+# Create network
+docker network create proxy
+
+# Configure domains
+# Replace these in docker-compose.yml files:
+# - panel.domain.com (Traefik dashboard)
+# - site.domain (example site)
+
+# Start Traefik
+docker-compose up -d
+
+# Start example site
+cd example-site
+cp .env.example .env
+docker-compose up -d
+```
+
+2. **Verify Setup**
+- Traefik Dashboard: https://panel.domain.com
+- Example Site: https://site.domain
+
+## Development Setup
+
+```bash
+# Create development override
+cat > docker-compose.override.yml << EOL
+services:
+  traefik:
+    command:
+      - "--api.insecure=true"
+    ports:
+      - "8080:8080"
+EOL
+
+# Start services in dev mode
+docker-compose up -d
+cd example-site
+npm install
+npm run dev
+```
+
+Development URLs:
+- Traefik Dashboard: http://localhost:8080
+- Example Site: http://localhost:3000
 
 ## Project Structure
-
 ```
-.
-├── docker-compose.yml          # Main Traefik configuration
-├── example-site/
-    ├── docker-compose.yml      # Example site configuration
-    ├── server.js              # Node.js application
-    ├── package.json           # Node.js dependencies
-    ├── Dockerfile            # Container configuration for the app
-    └── .env                  # Environment variables
+├── docker-compose.yml         # Traefik configuration
+└── example-site/
+    ├── docker-compose.yml     # Site configuration
+    ├── server.js             # Node.js application
+    ├── .env                  # Environment variables
+    └── Dockerfile           # Container setup
 ```
-
-## Features
-
-- Traefik v2.10 reverse proxy
-- Automatic SSL certificate generation using Let's Encrypt
-- HTTP to HTTPS redirection
-- Docker network isolation
-- Traefik dashboard
-- Sample Node.js application
-
-## Prerequisites
-
-- Docker and Docker Compose
-- Domain name with DNS configured
-- Port 80 and 443 available on your host
-
-## Setup Instructions
-
-1. Clone this repository
-2. Update domain names in both `docker-compose.yml` files:
-   - Update `panel.domain.com` in the root `docker-compose.yml` for the Traefik dashboard
-   - Update `site.domain` in `example-site/docker-compose.yml` for the example site
-
-3. Start Traefik:
-```bash
-docker-compose up -d
-```
-
-4. Start the example site:
-```bash
-cd example-site
-docker-compose up -d
-```
-
-## Configuration
-
-### Traefik Configuration
-- Dashboard available at: https://panel.domain.com
-- Automatic SSL certificate generation using Let's Encrypt
-- All HTTP traffic redirected to HTTPS
-- Docker socket mounted for automatic service discovery
-
-### Example Site Configuration
-- Simple Node.js Express application
-- Environment variables configurable via `.env` file
-- Exposed on port 3000 internally
-- Accessible through Traefik using the configured domain
-
-## Networks
-
-The project uses a Docker network named `proxy` for communication between Traefik and the services. This network is created automatically when starting the containers.
-
-## SSL Certificates
-
-SSL certificates are automatically managed by Traefik using Let's Encrypt. Certificates are stored in a Docker volume named `letsencrypt` for persistence.
-
-## Security Notes
-
-- The Traefik dashboard should be properly secured in production
-- Consider adding authentication to the dashboard
-- The Docker socket is mounted read-only for security
 
 ## Adding a New Site
 
-To add a new site to the Traefik setup:
-
-1. Create a new directory for your site:
+1. **Create Site Directory**
 ```bash
-mkdir my-new-site
-cd my-new-site
+mkdir my-site && cd my-site
 ```
 
-2. Create a `docker-compose.yml` file with the following structure:
+2. **Create Docker Compose**
 ```yaml
 services:
   mysite:
-    build: .  # Or use your specific image
+    build: .
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mysite.rule=Host(`your-domain.com`)"
@@ -105,105 +91,60 @@ networks:
     external: true
 ```
 
-Key points when adding a new site:
-- Replace `mysite` with a unique name for your service
-- Update `your-domain.com` with your actual domain
-- Set `YOUR_PORT` to the port your application listens on
-- Ensure your service is connected to the `proxy` network
-- Make sure the service names in the Traefik labels are unique across all sites
-
-3. Add your application files and Dockerfile
-
-4. Start your new site:
+3. **Deploy**
 ```bash
 docker-compose up -d
 ```
 
-The new site will be automatically detected by Traefik, and SSL certificates will be generated automatically.
-
-## Development
-
-### Local Development
-For local development without SSL:
-1. Create a `docker-compose.override.yml` file:
-```yaml
-services:
-  traefik:
-    command:
-      - "--api.insecure=true"
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./traefik.dev.toml:/etc/traefik/traefik.toml
-```
-
-2. Use `.env.example` as a template:
-```bash
-cp example-site/.env.example example-site/.env
-```
-
-### Environment Variables
-- Create `.env` files based on the provided `.env.example` templates
-- Never commit `.env` files to version control
-- Use different environment variables for development and production
-
-## Monitoring
-
-### Traefik Dashboard
-- Access the dashboard at http://localhost:8080 in development or https://panel.domain.com in production
-- Monitor:
-  - Service health
-  - Route status
-  - SSL certificate status
-  - HTTP metrics
-
-### Logs
-View logs for specific services:
-```bash
-# Traefik logs
-docker-compose logs -f traefik
-
-# Example site logs
-cd example-site && docker-compose logs -f
-```
-
 ## Troubleshooting
 
-### Common Issues
+Common issues and solutions:
 
-1. Certificate Issues
-- Ensure DNS is properly configured
-- Check Traefik logs for certificate generation errors
-- Verify domain ownership
+1. **SSL Certificates**
+   - Ensure DNS is configured
+   - Check Traefik logs: `docker-compose logs traefik`
 
-2. Network Issues
-- Confirm services are on the `proxy` network
-- Check container logs for connection errors
-- Verify port mappings
+2. **Network Issues**
+   - Verify proxy network: `docker network ls`
+   - Check container logs: `docker-compose logs`
 
-3. Service Discovery
-- Ensure labels are correctly configured
-- Check if services are detected in Traefik dashboard
-- Verify Docker socket permissions
-
-### Debug Mode
-Enable debug mode in Traefik by adding:
-```yaml
-command:
-  - "--log.level=DEBUG"
-```
+3. **Service Discovery**
+   - Confirm labels in docker-compose.yml
+   - Check Traefik dashboard
 
 ## Maintenance
 
-### Backup
-Important items to backup:
-- SSL certificates volume
-- Environment files
-- Custom configurations
+```bash
+# View logs
+docker-compose logs -f traefik
+docker-compose -f example-site/docker-compose.yml logs
 
-### Updates
-Regular maintenance tasks:
-1. Update Traefik version
-2. Check for security updates
-3. Rotate SSL certificates if needed
-4. Review and update dependencies 
+# Update services
+docker-compose pull
+docker-compose up -d
+
+# Backup certificates
+docker cp $(docker ps -q -f name=traefik):/letsencrypt ./backup/
+```
+
+## Security Notes
+
+- Change default dashboard domain
+- Enable authentication for Traefik dashboard
+- Keep Docker and Traefik updated
+- Use specific versions in Docker images
+- Regular security audits
+
+## Environment Variables
+
+```env
+# Traefik Dashboard
+DASHBOARD_DOMAIN=panel.domain.com
+
+# Example Site
+SITE_NAME=example-site
+NODE_ENV=production
+PORT=3000
+```
+
+For more details, check [Traefik documentation](https://doc.traefik.io/traefik/). 
