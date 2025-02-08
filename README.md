@@ -74,4 +74,49 @@ SSL certificates are automatically managed by Traefik using Let's Encrypt. Certi
 
 - The Traefik dashboard should be properly secured in production
 - Consider adding authentication to the dashboard
-- The Docker socket is mounted read-only for security 
+- The Docker socket is mounted read-only for security
+
+## Adding a New Site
+
+To add a new site to the Traefik setup:
+
+1. Create a new directory for your site:
+```bash
+mkdir my-new-site
+cd my-new-site
+```
+
+2. Create a `docker-compose.yml` file with the following structure:
+```yaml
+services:
+  mysite:
+    build: .  # Or use your specific image
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mysite.rule=Host(`your-domain.com`)"
+      - "traefik.http.routers.mysite.entrypoints=websecure"
+      - "traefik.http.routers.mysite.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mysite.loadbalancer.server.port=YOUR_PORT"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+```
+
+Key points when adding a new site:
+- Replace `mysite` with a unique name for your service
+- Update `your-domain.com` with your actual domain
+- Set `YOUR_PORT` to the port your application listens on
+- Ensure your service is connected to the `proxy` network
+- Make sure the service names in the Traefik labels are unique across all sites
+
+3. Add your application files and Dockerfile
+
+4. Start your new site:
+```bash
+docker-compose up -d
+```
+
+The new site will be automatically detected by Traefik, and SSL certificates will be generated automatically. 
