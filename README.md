@@ -119,4 +119,91 @@ Key points when adding a new site:
 docker-compose up -d
 ```
 
-The new site will be automatically detected by Traefik, and SSL certificates will be generated automatically. 
+The new site will be automatically detected by Traefik, and SSL certificates will be generated automatically.
+
+## Development
+
+### Local Development
+For local development without SSL:
+1. Create a `docker-compose.override.yml` file:
+```yaml
+services:
+  traefik:
+    command:
+      - "--api.insecure=true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./traefik.dev.toml:/etc/traefik/traefik.toml
+```
+
+2. Use `.env.example` as a template:
+```bash
+cp example-site/.env.example example-site/.env
+```
+
+### Environment Variables
+- Create `.env` files based on the provided `.env.example` templates
+- Never commit `.env` files to version control
+- Use different environment variables for development and production
+
+## Monitoring
+
+### Traefik Dashboard
+- Access the dashboard at http://localhost:8080 in development or https://panel.domain.com in production
+- Monitor:
+  - Service health
+  - Route status
+  - SSL certificate status
+  - HTTP metrics
+
+### Logs
+View logs for specific services:
+```bash
+# Traefik logs
+docker-compose logs -f traefik
+
+# Example site logs
+cd example-site && docker-compose logs -f
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. Certificate Issues
+- Ensure DNS is properly configured
+- Check Traefik logs for certificate generation errors
+- Verify domain ownership
+
+2. Network Issues
+- Confirm services are on the `proxy` network
+- Check container logs for connection errors
+- Verify port mappings
+
+3. Service Discovery
+- Ensure labels are correctly configured
+- Check if services are detected in Traefik dashboard
+- Verify Docker socket permissions
+
+### Debug Mode
+Enable debug mode in Traefik by adding:
+```yaml
+command:
+  - "--log.level=DEBUG"
+```
+
+## Maintenance
+
+### Backup
+Important items to backup:
+- SSL certificates volume
+- Environment files
+- Custom configurations
+
+### Updates
+Regular maintenance tasks:
+1. Update Traefik version
+2. Check for security updates
+3. Rotate SSL certificates if needed
+4. Review and update dependencies 
