@@ -50,6 +50,26 @@ app.get('/', (req, res) => {
                 background-color: #f8f9fa;
                 border-radius: 4px;
             }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            tr:hover {
+                background-color: #f1f1f1;
+            }
         </style>
     </head>
     <body>
@@ -59,25 +79,46 @@ app.get('/', (req, res) => {
                 <p><strong>Environment:</strong> ${nodeEnv}</p>
                 <p><strong>Hostname:</strong> ${req.headers.host}</p>
                 <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-                <p><strong>Request ID:</strong> ${req.headers['x-request-id'] || 'Not available'}</p>
-                <p><strong>IP Address:</strong> ${req.ip || 'Not available'}</p>
-                <p><strong>Headers:</strong> ${JSON.stringify(req.headers)}</p>
-                <p><strong>Body:</strong> ${JSON.stringify(req.body)}</p>
-                <p><strong>Query:</strong> ${JSON.stringify(req.query)}</p>
-                <p><strong>Method:</strong> ${req.method}</p>
-                <p><strong>Path:</strong> ${req.path}</p>
-                <p><strong>User-Agent:</strong> ${req.headers['user-agent'] || 'Not available'}</p>
-                <p><strong>Referer:</strong> ${req.headers.referer || 'Not available'}</p>
-                <p><strong>X-Forwarded-For:</strong> ${req.headers['x-forwarded-for'] || 'Not available'}</p>
-                <p><strong>X-Real-IP:</strong> ${req.headers['x-real-ip'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Host:</strong> ${req.headers['x-forwarded-host'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Proto:</strong> ${req.headers['x-forwarded-proto'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Port:</strong> ${req.headers['x-forwarded-port'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Ssl:</strong> ${req.headers['x-forwarded-ssl'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Server:</strong> ${req.headers['x-forwarded-server'] || 'Not available'}</p>
-                <p><strong>X-Forwarded-Prefix:</strong> ${req.headers['x-forwarded-prefix'] || 'Not available'}</p>
                 
-
+                <h2>Request Headers</h2>
+                <table>
+                    <tr>
+                        <th>Header</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare IP</td>
+                        <td>${req.headers['cf-connecting-ip'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare Country</td>
+                        <td>${req.headers['cf-ipcountry'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare Ray ID</td>
+                        <td>${req.headers['cf-ray'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>Client Platform</td>
+                        <td>${req.headers['sec-ch-ua-platform'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>Client Bitness</td>
+                        <td>${req.headers['sec-ch-ua-bitness'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>X-Forwarded-For</td>
+                        <td>${req.headers['x-forwarded-for'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>X-Forwarded-Proto</td>
+                        <td>${req.headers['x-forwarded-proto'] || 'Not available'}</td>
+                    </tr>
+                    <tr>
+                        <td>User Agent</td>
+                        <td>${req.headers['user-agent'] || 'Not available'}</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </body>
