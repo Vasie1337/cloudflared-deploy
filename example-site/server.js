@@ -61,6 +61,23 @@ app.get('/', (req, res) => {
                 <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
                 <p><strong>Request ID:</strong> ${req.headers['x-request-id'] || 'Not available'}</p>
                 <p><strong>IP Address:</strong> ${req.ip || 'Not available'}</p>
+                <p><strong>Headers:</strong> ${JSON.stringify(req.headers)}</p>
+                <p><strong>Body:</strong> ${JSON.stringify(req.body)}</p>
+                <p><strong>Query:</strong> ${JSON.stringify(req.query)}</p>
+                <p><strong>Method:</strong> ${req.method}</p>
+                <p><strong>Path:</strong> ${req.path}</p>
+                <p><strong>User-Agent:</strong> ${req.headers['user-agent'] || 'Not available'}</p>
+                <p><strong>Referer:</strong> ${req.headers.referer || 'Not available'}</p>
+                <p><strong>X-Forwarded-For:</strong> ${req.headers['x-forwarded-for'] || 'Not available'}</p>
+                <p><strong>X-Real-IP:</strong> ${req.headers['x-real-ip'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Host:</strong> ${req.headers['x-forwarded-host'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Proto:</strong> ${req.headers['x-forwarded-proto'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Port:</strong> ${req.headers['x-forwarded-port'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Ssl:</strong> ${req.headers['x-forwarded-ssl'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Server:</strong> ${req.headers['x-forwarded-server'] || 'Not available'}</p>
+                <p><strong>X-Forwarded-Prefix:</strong> ${req.headers['x-forwarded-prefix'] || 'Not available'}</p>
+                
+
             </div>
         </div>
     </body>
