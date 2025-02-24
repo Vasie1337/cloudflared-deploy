@@ -1,4 +1,3 @@
-// Helper function to format JSON nicely for display
 const formatJSON = (obj) => {
   return JSON.stringify(obj, null, 2)
     .replace(/&/g, '&amp;')
@@ -10,7 +9,6 @@ const formatJSON = (obj) => {
     .replace(/ /g, '&nbsp;');
 };
 
-// Helper to get a color based on environment
 const getEnvironmentColor = (env) => {
   switch(env.toLowerCase()) {
     case 'production':

@@ -1,7 +1,6 @@
 const { formatJSON, getEnvironmentColor } = require('../utils/formatters');
 
 function generateMainPage(req, siteName, nodeEnv) {
-  // Extract key headers for display
   const keyHeaders = {
     'user-agent': req.headers['user-agent'],
     'accept-language': req.headers['accept-language'],
@@ -11,18 +10,6 @@ function generateMainPage(req, siteName, nodeEnv) {
   };
   
   const now = new Date();
-  const formattedDate = now.toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
-  const formattedTime = now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  });
 
   const allHeadersFormatted = formatJSON(req.headers);
   
@@ -33,7 +20,151 @@ function generateMainPage(req, siteName, nodeEnv) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${siteName} - ${nodeEnv.toUpperCase()}</title>
         <style>
-            /* ... existing styles ... */
+            :root {
+                --bg-color: #f8f9fa;
+                --text-color: #212529;
+                --header-color: ${getEnvironmentColor(nodeEnv)};
+                --border-color: #dee2e6;
+                --hover-color: #e9ecef;
+                --card-bg: #ffffff;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                line-height: 1.6;
+            }
+            
+            .container {
+                background-color: var(--card-bg);
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            
+            header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-bottom: 15px;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 20px;
+            }
+            
+            .title-area h1 {
+                margin: 0;
+                font-size: 32px;
+                color: var(--text-color);
+            }
+            
+            .environment-badge {
+                background-color: var(--header-color);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 14px;
+                letter-spacing: 1px;
+            }
+            
+            .server-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .info-card {
+                background-color: var(--bg-color);
+                padding: 15px;
+                border-radius: 8px;
+                border-left: 4px solid var(--header-color);
+            }
+            
+            .info-card h3 {
+                margin: 0 0 10px 0;
+                font-size: 18px;
+                color: var(--header-color);
+            }
+            
+            .info-card p {
+                margin: 5px 0;
+                word-break: break-word;
+            }
+            
+            .tabs {
+                margin-top: 25px;
+            }
+            
+            .tab-buttons {
+                display: flex;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 15px;
+            }
+            
+            .tab-button {
+                padding: 10px 20px;
+                background: none;
+                border: none;
+                border-bottom: 3px solid transparent;
+                cursor: pointer;
+                font-weight: bold;
+                color: var(--text-color);
+                opacity: 0.7;
+                transition: all 0.3s;
+            }
+            
+            .tab-button.active {
+                border-bottom: 3px solid var(--header-color);
+                opacity: 1;
+            }
+            
+            .tab-button:hover {
+                background-color: var(--hover-color);
+                opacity: 1;
+            }
+            
+            .tab-content {
+                display: none;
+                padding: 15px;
+                background-color: var(--bg-color);
+                border-radius: 8px;
+                overflow: auto;
+                max-height: 400px;
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+            
+            .code-block {
+                font-family: monospace;
+                white-space: pre-wrap;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            footer {
+                margin-top: 25px;
+                text-align: center;
+                font-size: 14px;
+                color: #6c757d;
+            }
+            
+            @media (max-width: 768px) {
+                .server-info {
+                    grid-template-columns: 1fr;
+                }
+                
+                .tab-buttons {
+                    flex-wrap: wrap;
+                }
+            }
         </style>
     </head>
     <body>

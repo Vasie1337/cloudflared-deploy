@@ -9,10 +9,8 @@ const port = process.env.PORT || 3000;
 const siteName = process.env.SITE_NAME || 'Unnamed Site';
 const nodeEnv = process.env.NODE_ENV || 'development';
 
-// Serve static files from public directory
 app.use(express.static('public'));
 
-// Enhanced security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -38,12 +36,10 @@ app.get('/', (req, res) => {
   res.send(generateMainPage(req, siteName, nodeEnv));
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).send(generate404Page(siteName));
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send(generate500Page(siteName, nodeEnv, err));
