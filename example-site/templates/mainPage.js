@@ -38,28 +38,57 @@ function generateMainPage(req, siteName, nodeEnv) {
     </head>
     <body>
         <div class="container">
-            <!-- ... existing HTML ... -->
+            <header>
+                <div class="title-area">
+                    <h1>${siteName}</h1>
+                </div>
+                <div class="environment-badge">${nodeEnv}</div>
+            </header>
+            
+            <div class="server-info">
+                <!-- ... server info cards ... -->
+            </div>
+            
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('key-headers', event)">Key Headers</button>
+                    <button class="tab-button" onclick="switchTab('all-headers', event)">All Headers</button>
+                    <button class="tab-button" onclick="switchTab('server-env', event)">Server Environment</button>
+                </div>
+                
+                <div id="key-headers" class="tab-content active">
+                    <div class="code-block">
+                        ${formatJSON(keyHeaders)}
+                    </div>
+                </div>
+                
+                <div id="all-headers" class="tab-content">
+                    <div class="code-block">
+                        ${allHeadersFormatted}
+                    </div>
+                </div>
+                
+                <div id="server-env" class="tab-content">
+                    <div class="code-block">
+                        ${formatJSON({
+                          'Site Name': siteName,
+                          'Environment': nodeEnv,
+                          'Node Version': process.version,
+                          'Platform': process.platform,
+                          'Process ID': process.pid,
+                          'Server Time': now.toISOString(),
+                          'Memory Usage': process.memoryUsage().rss + ' bytes'
+                        })}
+                    </div>
+                </div>
+            </div>
+            
+            <footer>
+                <p>Server running since ${new Date(Date.now() - process.uptime() * 1000).toLocaleString()}</p>
+            </footer>
         </div>
         
-        <script>
-            function switchTab(tabId, event) {
-                // Hide all tab content
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                
-                // Deactivate all tab buttons
-                document.querySelectorAll('.tab-button').forEach(button => {
-                    button.classList.remove('active');
-                });
-                
-                // Show selected tab content
-                document.getElementById(tabId).classList.add('active');
-                
-                // Activate clicked button
-                event.target.classList.add('active');
-            }
-        </script>
+        <script src="/js/tabs.js"></script>
     </body>
     </html>`;
 }
