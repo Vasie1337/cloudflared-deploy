@@ -182,9 +182,9 @@ function generateMainPage(req, siteName, nodeEnv) {
             
             <div class="tabs">
                 <div class="tab-buttons">
-                    <button class="tab-button active" onclick="switchTab('key-headers', event)">Key Headers</button>
-                    <button class="tab-button" onclick="switchTab('all-headers', event)">All Headers</button>
-                    <button class="tab-button" onclick="switchTab('server-env', event)">Server Environment</button>
+                    <button class="tab-button active" data-tab="key-headers">Key Headers</button>
+                    <button class="tab-button" data-tab="all-headers">All Headers</button>
+                    <button class="tab-button" data-tab="server-env">Server Environment</button>
                 </div>
                 
                 <div id="key-headers" class="tab-content active">

@@ -1,4 +1,4 @@
-function switchTab(tabId, event) {
+function switchTab(tabId, clickedButton) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
@@ -8,6 +8,15 @@ function switchTab(tabId, event) {
     });
     
     document.getElementById(tabId).classList.add('active');
-    
-    event.target.classList.add('active');
-} 
+    clickedButton.classList.add('active');
+}
+
+// Add event listeners when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const tabId = event.target.getAttribute('data-tab');
+            switchTab(tabId, event.target);
+        });
+    });
+}); 
