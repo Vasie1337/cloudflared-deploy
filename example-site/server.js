@@ -59,7 +59,7 @@ app.get('/', (req, res) => {
                 <p><strong>Environment:</strong> ${nodeEnv}</p>
                 <p><strong>Hostname:</strong> ${req.headers.host}</p>
                 <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-                <p><strong>Request ID:</strong> ${req.headers['x-request-id'] || 'Not available'}</p>
+                <p><strong>Headers:</strong> ${JSON.stringify(req.headers)}</p>
             </div>
         </div>
     </body>
