@@ -1,10 +1,6 @@
 services:
   site1:
     build: .
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.site1.rule=Host(`vasie.online`)"
-      - "traefik.http.services.site1.loadbalancer.server.port=3000"
     networks:
       - proxy
 
